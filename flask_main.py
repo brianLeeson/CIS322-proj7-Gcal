@@ -28,7 +28,7 @@ import secrets.admin_secrets  # Per-machine secrets
 import secrets.client_secrets # Per-application secrets
 #  Note to CIS 322 students:  client_secrets is what you turn in.
 #     You need an admin_secrets, but the grader and I don't use yours. 
-#     We use our own admin_secrets file along with your client_secrets
+#     We use our own admin_secrets file, along with your client_secrets
 #     file on our Raspberry Pis. 
 
 app = flask.Flask(__name__)
@@ -37,7 +37,7 @@ app.logger.setLevel(logging.DEBUG)
 app.secret_key=CONFIG.secret_key
 
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
-CLIENT_SECRET_FILE = secrets.admin_secrets.google_key_file  ## You'll need this
+CLIENT_SECRET_FILE = secrets.admin_secrets.google_key_file 
 APPLICATION_NAME = 'MeetMe class project'
 
 #############################
@@ -140,7 +140,7 @@ def oauth2callback():
   """
   The 'flow' has this one place to call back to.  We'll enter here
   more than once as steps in the flow are completed, and need to keep
-  track of how far we've gotten. The first time we'll do the first
+  track of how far we've gotten. The first time we do the first
   step, the second time we'll skip the first step and do the second,
   and so on.
   """
@@ -196,13 +196,26 @@ def setrange():
     app.logger.debug("Entering setrange")  
     flask.flash("Setrange gave us '{}'".format(
       request.form.get('daterange')))
+
+    #Get date and time range
     daterange = request.form.get('daterange')
+    startTime = request.form.get('startTime')[:5] #strip seconds
+    endTime = request.form.get('endTime')[:5] #strip seconds
+
     flask.session['daterange'] = daterange
     daterange_parts = daterange.split()
     flask.session['begin_date'] = interpret_date(daterange_parts[0])
     flask.session['end_date'] = interpret_date(daterange_parts[2])
+    
+    interStart = interpret_time(startTime)
+    flask.session['begin_time'] = interStart
+    interEnd = interpret_time(endTime)   
+    flask.session['end_time'] = interEnd
+
+    flask.session['timeRange'] = (interStart, interEnd)
+    
     app.logger.debug("Setrange parsed {} - {}  dates as {} - {}".format(
-      daterange_parts[0], daterange_parts[1], 
+      daterange_parts[0], daterange_parts[2], 
       flask.session['begin_date'], flask.session['end_date']))
     return flask.redirect(flask.url_for("choose"))
 

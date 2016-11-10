@@ -8,8 +8,7 @@
 #     client_secrets.py must be placed in the secrets directory
 #
 Makefile.local: 
-	echo "You must run the 'configure' script before using make"
-
+	bash ./configure
 include Makefile.local
 
 

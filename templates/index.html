@@ -7,7 +7,6 @@
      href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css"
 />
 
-
 <link rel="stylesheet" type="text/css"
     href="/static/css/busy.css"
 />
@@ -29,7 +28,6 @@
 <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
-
 </head>
 
 <body>
@@ -38,9 +36,9 @@
 <h1>Busy times</h1>
 
 <!--
-  -- If there are any warnings or other messages from a prior action,
-  -- they appear above the rest of the content, just until the next 
-  -- action.
+  If there are any warnings or other messages from a prior action,
+  they appear above the rest of the content, just until the next 
+  action.
   -->
 
 {% with messages = get_flashed_messages() %}
@@ -78,8 +76,15 @@
        );
     });
   </script>
+<br/>
 
-<br /><input type="submit" value="Choose" />
+<h2>Time Range</h2>
+<input type="time" name="startTime" value="00:00:00">
+to
+<input type="time" name="endTime" value="00:00:00">
+
+<br>
+<input type="submit" value="Choose" />
 </form>
 
     <!--
@@ -104,3 +109,4 @@
 
   </div>  <!-- container (for bootstrap) -->
   </body> </html>
+
