@@ -313,19 +313,18 @@ def list_calendars(service):
     """
     app.logger.debug("Entering list_calendars")  
     calendar_list = service.calendarList().list().execute()["items"]
-    #event = service.events().get(calendarId=primary)
     result = [ ]
     for cal in calendar_list:
         #events is all events in the date range. does not consider time
-        events = service.events().list(calendarId=cal['id'], 
-          timeMax=flask.session["end_date"],
-          timeMin=flask.session["begin_date"]).execute()
+        timeMin=flask.session["begin_date"]
+        timeMax=flask.session["end_date"] #google excludes this day in the range
+        timeMax=arrow.get(timeMax).replace(days =+ 1).isoformat() #so we add a day
+        events = service.events().list(calendarId=cal['id'], timeMin=timeMin, timeMax=timeMax).execute()['items']
         
         #process events to exclude irrelevent times
         events = process(events,
           flask.session['begin_time'],
           flask.session['end_time'])
-        #print("EVENTS:", events)
 
         kind = cal["kind"]
         id = cal["id"]

@@ -2,7 +2,9 @@ import arrow
 
 def process(eventList, rangeStart, rangeEnd):
   """
-  arg: a dictionary of events
+  arg: a dictionary of events, 
+    range start time as string
+    range end time as string
   return: list of relevant events
     list = [summary,
             startTime,
@@ -11,18 +13,21 @@ def process(eventList, rangeStart, rangeEnd):
   
   inRangeEvents = []
 
+  print("RANGESTART:", rangeStart)
+  print("RANGEEND:", rangeEnd)
   #get just the time as a string
   rangeStart = arrow.get(rangeStart).time().isoformat()
   rangeEnd = arrow.get(rangeEnd).time().isoformat()
+  print("EVENTLIST:", eventList)
 
-  print("CAL:")
+  #print("CAL:")
 
   i = 1
-  for entry in eventList['items']:
-    print("EVENT", i)
+  for entry in eventList:
+    #print("EVENT", i)
     
     summary = entry["summary"]
-    print("Event is:", summary)
+    #print("Event is:", summary)
 
     #all day events. if transparent, not blocking
     transparent = "not"
@@ -39,8 +44,8 @@ def process(eventList, rangeStart, rangeEnd):
       eventStart = arrow.get(eventStart).time().isoformat()
       eventEnd = arrow.get(eventEnd).time().isoformat()
 
-      print("eS, eE:", eventStart, ",", eventEnd)
-      print("rS, rE:", rangeStart, ",", rangeEnd)
+      #print("eS, eE:", eventStart, ",", eventEnd)
+      #print("rS, rE:", rangeStart, ",", rangeEnd)
 
       #event occurs inside range
       insideRange = (eventEnd < rangeEnd) and (eventStart > rangeStart)
@@ -55,7 +60,7 @@ def process(eventList, rangeStart, rangeEnd):
 
     i+=1
   
-  print(inRangeEvents)
-  print('FINISHED')
+  print("INRANGEEVENTS LIST:", inRangeEvents)
+  print('--FINISHED--')
   return inRangeEvents
 

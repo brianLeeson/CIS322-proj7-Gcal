@@ -35,22 +35,6 @@
 
 <h1>Busy times</h1>
 
-<!--
-  If there are any warnings or other messages from a prior action,
-  they appear above the rest of the content, just until the next 
-  action.
-  -->
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
 <h2>Date range</h2>
   <form action="/setrange" method="post">
   <input type="text" name="daterange" size="12"
@@ -81,7 +65,7 @@
 <h2>Time Range</h2>
 <input type="time" name="startTime" value="00:00:00">
 to
-<input type="time" name="endTime" value="00:00:00">
+<input type="time" name="endTime" value="23:59:00">
 
 <br>
 <input type="submit" value="Choose" />
@@ -96,14 +80,14 @@ to
 {% if g.calendars is defined  %}
   <div class="row">
   {% for cal in g.calendars if cal.selected %}
-          <h3>Calendar {{loop.index}}</h3>
+          <input type="checkbox"><h3>Calendar {{loop.index}} is {{cal.summary}}</h3>
           <div class="row">
 	   {% for event in cal.events %}
                    <div class="row">
-                    <!-- TODO: checkboxs-->
-                    {{ event.summary }} 
-                    {{ event.eventStart }}
-                    {{ event.eventEnd }}
+                    <input type="checkbox">
+                    <b>Event: </b>{{ event.summary }} 
+                    <b>Starts: </b> {{ event.eventStart }}
+                    <b>Ends: </b> {{ event.eventEnd }}
                    </div><br>
            {% endfor %}
           </div><br>
