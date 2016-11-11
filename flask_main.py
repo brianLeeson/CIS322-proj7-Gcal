@@ -7,6 +7,8 @@ import uuid
 import json
 import logging
 
+from process_events import process
+
 # Date handling 
 import arrow # Replacement for datetime, based on moment.js
 # import datetime # But we still need time
@@ -62,7 +64,7 @@ def choose():
     ## 'return' 
     app.logger.debug("Checking credentials for Google calendar access")
     credentials = valid_credentials()
-    if not credentials:
+    if not credentials: #not None is True. weird.
       app.logger.debug("Redirecting to authorization")
       return flask.redirect(flask.url_for('oauth2callback'))
 
@@ -214,9 +216,10 @@ def setrange():
 
     flask.session['timeRange'] = (interStart, interEnd)
     
-    app.logger.debug("Setrange parsed {} - {}  dates as {} - {}".format(
+    app.logger.debug("Setrange parsed {} - {}  dates as {} - {}, times as {} - {}".format(
       daterange_parts[0], daterange_parts[2], 
-      flask.session['begin_date'], flask.session['end_date']))
+      flask.session['begin_date'], flask.session['end_date'],
+      flask.session['begin_time'], flask.session['end_time']))
     return flask.redirect(flask.url_for("choose"))
 
 ####
@@ -230,6 +233,7 @@ def init_session_values():
     Start with some reasonable defaults for date and time ranges.
     Note this must be run in app context ... can't call from main. 
     """
+    app.logger.debug("init session values")
     # Default date span = tomorrow to 1 week from now
     now = arrow.now('local')     # We really should be using tz from browser
     tomorrow = now.replace(days=+1)
@@ -309,8 +313,20 @@ def list_calendars(service):
     """
     app.logger.debug("Entering list_calendars")  
     calendar_list = service.calendarList().list().execute()["items"]
+    #event = service.events().get(calendarId=primary)
     result = [ ]
     for cal in calendar_list:
+        #events is all events in the date range. does not consider time
+        events = service.events().list(calendarId=cal['id'], 
+          timeMax=flask.session["end_date"],
+          timeMin=flask.session["begin_date"]).execute()
+        
+        #process events to exclude irrelevent times
+        events = process(events,
+          flask.session['begin_time'],
+          flask.session['end_time'])
+        #print("EVENTS:", events)
+
         kind = cal["kind"]
         id = cal["id"]
         if "description" in cal: 
@@ -328,7 +344,9 @@ def list_calendars(service):
             "id": id,
             "summary": summary,
             "selected": selected,
-            "primary": primary
+            "primary": primary,
+            "description": desc,
+            "events": events
             })
     return sorted(result, key=cal_sort_key)
 
