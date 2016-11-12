@@ -59,7 +59,8 @@
         }}
        );
     });
-  </script>
+
+ </script>
 <br/>
 
 <h2>Time Range</h2>
@@ -80,12 +81,13 @@ to
 {% if g.calendars is defined  %}
   <div class="row">
   {% for cal in g.calendars if cal.selected %}
-          <input type="checkbox"><h3>Calendar {{loop.index}} is {{cal.summary}}</h3>
-          <div class="row">
+          <input type="checkbox", class = "header" id="{{loop.index}}"> Show Contents
+          <h3>Calendar {{loop.index}} is {{cal.summary}}</h3>
+          <div class="row_{{loop.index}} hide" name="cal {{loop.index}}" id= "calendar" style = "display:none;">
 	   {% for event in cal.events %}
                    <div class="row">
                     <input type="checkbox">
-                    <b>Event: </b>{{ event.summary }} 
+                    <b>Event: </b> {{ event.summary }} 
                     <b>Starts: </b> {{ event.eventStart }}
                     <b>Ends: </b> {{ event.eventEnd }}
                    </div><br>
@@ -95,6 +97,13 @@ to
   </div>
 {% endif %}
     
+  <script>
+  $(".header").click(function(event){
+    var str = ".row_" + this.id
+    $(str).toggle();
+});
+  </script>
+
 
   </div>  <!-- container (for bootstrap) -->
   </body> </html>
