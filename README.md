@@ -1,6 +1,6 @@
 # proj7-Gcal
-Simple list of dated memos kept in MongoDB database AUTHOR: Brian Leeson, bel@cs.uoregon.edu
-Skeleton code created by instructor: Michael Young
+AUTHOR: Brian Leeson, bel@cs.uoregon.edu  
+Skeleton code created by instructor: Michael Young  
 
 ## What is here
 A simple webpage that finds potentially busy times in a specific date and time range. <br>
